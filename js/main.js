@@ -46,6 +46,7 @@ let appData;
 let levels = [];
 let currentLevelNumber = 0;
 let draggedPart = "";
+let dragPreview = null;
 
 function showStatus(message, type) {
   page.status.textContent = message;
@@ -263,104 +264,135 @@ function showMaterialCount() {
 }
 
 function startDragging(event, partName) {
-  const level = getCurrentLevel();
-
-  for (const part of level.placedParts.values()) {
-    if (part === partName) {
-      return;
+  function removePart(slotId) {
+    function startDragging(event, partName) {
+    const level = getCurrentLevel();
     }
-  }
-
-  if (
-    level.data.testGap &&
-    level.testedMaterials.includes(partName)
-  ) {
-    return;
-  }
-
-  draggedPart = partName;
-
-  document.addEventListener("mouseup", stopDragging);
-
-  event.preventDefault();
-}
-
-function stopDragging(event) {
-  if (draggedPart === "") {
-    return;
-  }
-
-  const level = getCurrentLevel();
-
-  const slots = page.slots.querySelectorAll(".slot");
-
-  let targetSlot = null;
-
-  slots.forEach(function (slot) {
-    const box = slot.getBoundingClientRect();
+    for (const part of level.placedParts.values()) {
+        if (part === partName) {
+            return;
+        }
+    }
 
     if (
-      event.clientX >= box.left &&
-      event.clientX <= box.right &&
-      event.clientY >= box.top &&
-      event.clientY <= box.bottom
+        level.data.testGap &&
+        level.testedMaterials.includes(partName)
     ) {
-      targetSlot = slot;
+        return;
     }
-  });
-
-  if (targetSlot !== null) {
-    const slotId = targetSlot.dataset.slot;
-
-    if (level.data.testGap) {
-      level.placedParts.set(slotId, draggedPart);
-
-      if (!level.testedMaterials.includes(draggedPart)) {
-        level.testedMaterials.push(draggedPart);
-      }
-
-      const conducts = classifyMaterial(
-        draggedPart,
-        appData.parts
-      );
-
-      const partName = appData.parts[draggedPart].label;
-
-      if (conducts) {
-        showStatus(
-          partName + " conducts electricity.",
-          "success"
-        );
-      } else {
-        showStatus(
-          partName + " is an insulator.",
-          "warning"
-        );
-      }
-    } else {
-      level.placedParts.forEach(function (part, oldSlotId) {
-        if (part === draggedPart) {
-          level.placedParts.delete(oldSlotId);
-        }
-      });
-
-      level.placedParts.set(slotId, draggedPart);
-
-      showStatus(appData.parts[draggedPart].label + " placed.");
-    }
-  } else {
-    showStatus(
-      "Drop the part inside a dotted slot.",
-      "warning"
-    );
   }
 
-  draggedPart = "";
-
-  document.removeEventListener("mouseup", stopDragging);
+    draggedPart = partName;
+    dragPreview = document.createElement("div");
+    dragPreview.className = "drag-preview";
 
   
-  drawLevel();
+    const image = document.createElement("img");
+    image.src = appData.parts[partName].icon;
+    image.alt = appData.parts[partName].label;
+
+   
+    const label = document.createElement("span");
+    label.textContent = appData.parts[partName].label;
+
+    dragPreview.appendChild(image);
+    dragPreview.appendChild(label);
+    document.body.appendChild(dragPreview);
+
+
+    moveDragging(event);
+
+    document.addEventListener("mouseup", stopDragging);
+
+    event.preventDefault();
+}
+
+function moveDragging(event) {
+    if (dragPreview !== null) {
+        dragPreview.style.left = event.clientX + "px";
+        dragPreview.style.top = event.clientY + "px";
+    }
+}
+function stopDragging(event) {
+    if (draggedPart === "") {
+        return;
+    }
+
+    const level = getCurrentLevel();
+    const slots = page.slots.querySelectorAll(".slot");
+
+    let targetSlot = null;
+  
+    slots.forEach(function (slot) {
+        const box = slot.getBoundingClientRect();
+
+        if (
+            event.clientX >= box.left &&
+            event.clientX <= box.right &&
+            event.clientY >= box.top &&
+            event.clientY <= box.bottom
+        ) {
+            targetSlot = slot;
+        }
+    });
+
+    if (targetSlot !== null) {
+        const slotId = targetSlot.dataset.slot;
+
+        if (level.data.testGap) {
+            level.placedParts.set(slotId, draggedPart);
+
+            if (!level.testedMaterials.includes(draggedPart)) {
+                level.testedMaterials.push(draggedPart);
+            }
+
+            const conducts = classifyMaterial(
+                draggedPart,
+                appData.parts
+            );
+
+            const partName = appData.parts[draggedPart].label;
+
+            if (conducts) {
+                showStatus(
+                    partName + " conducts electricity.",
+                    "success"
+                );
+            } else {
+                showStatus(
+                    partName + " is an insulator.",
+                    "warning"
+                );
+            }
+        } else {
+         
+            level.placedParts.forEach(function (part, oldSlotId) {
+                if (part === draggedPart) {
+                    level.placedParts.delete(oldSlotId);
+                }
+            });
+
+            level.placedParts.set(slotId, draggedPart);
+
+            showStatus(appData.parts[draggedPart].label + " placed.");
+        }
+    } else {
+        showStatus(
+            "Drop the part inside a dotted slot.",
+            "warning"
+        );
+    }
+
+    if (dragPreview !== null) {
+        dragPreview.remove();
+        dragPreview = null;
+    }
+
+    draggedPart = "";
+
+    document.removeEventListener("mouseup", stopDragging);
+
+    drawLevel();
 }
 
 function removePart(slotId) {
@@ -560,4 +592,6 @@ async function startApp() {
     page.errorMessage.textContent = error.message;
   }
 }
+document.addEventListener("mousemove", moveDragging);
+
 startApp();
