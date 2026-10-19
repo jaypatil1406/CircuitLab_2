@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CircuitLab</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/board.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1 id="appTitle">CircuitLab</h1>
+      <nav aria-label="Levels">
+        <ol id="levelNav"></ol>
+      </nav>
+      <button id="helpButton" class="secondary">Help</button>
+    </header>
+
+    <main id="app">
+      <div id="errorMessage" role="status" class="message error" hidden></div>
+      <section id="labScreen" class="layout">
+        <aside class="panel">
+          <h2 id="paletteTitle">Parts</h2>
+          <p class="muted">Drag a part into a dotted slot.</p>
+          <div id="palette" class="palette"></div>
+        </aside>
+
+        <section class="board-area" aria-label="Circuit board">
+          <div id="board" class="board">
+            <svg class="wires" viewBox="0 0 600 360" aria-hidden="true">
+              <path
+                class="wire"
+                d="M110 180 L110 75 L300 75 L490 75 L490 180 L490 285 L300 285 L110 285 Z"
+              ></path>
+            </svg>
+            <div id="slots"></div>
+            <div id="fixedParts"></div>
+          </div>
+        </section>
+
+        <aside class="panel status-panel">
+          <h2 id="levelTitle">Level 1</h2>
+          <p id="levelGoal"></p>
+          <div id="statusMessage" class="message" role="status">
+            Place every required part, then test the circuit.
+          </div>
+          <p>Attempts: <output id="triesCount">0</output></p>
+          <div id="switchArea"></div>
+          <div id="materialProgress"></div>
+          <button id="testButton" disabled>Test Circuit</button>
+          <button id="quizButton" disabled>Knowledge check</button>
+          <button id="resetLevelButton" class="secondary">Reset level</button>
+          <button id="reportButton" hidden>See lab report</button>
+        </aside>
+      </section>
+
+      <section id="quizScreen" class="quiz-card" hidden>
+        <p class="eyebrow" id="quizLevelLabel"></p>
+        <h2>Knowledge check</h2>
+        <p id="questionText"></p>
+        <fieldset id="answerOptions">
+          <legend>Choose your answer</legend>
+        </fieldset>
+        <p id="quizFeedback" class="message" role="status" hidden></p>
+        <button id="submitAnswer" disabled>Submit</button>
+        <button id="nextButton" hidden>Continue</button>
+      </section>
+
+      <section id="reportScreen" class="report-card" hidden>
+        <h2>Lab report</h2>
+        <p id="finalScore" class="score"></p>
+        <table>
+          <caption>
+            Results by level
+          </caption>
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Attempts</th>
+              <th>Knowledge check</th>
+            </tr>
+          </thead>
+          <tbody id="reportRows"></tbody>
+        </table>
+        <div class="report-columns">
+          <section>
+            <h3>Conductors found</h3>
+            <ul id="conductorList"></ul>
+          </section>
+          <section>
+            <h3>Insulators found</h3>
+            <ul id="insulatorList"></ul>
+          </section>
+        </div>
+        <button id="restartButton">Restart lab</button>
+      </section>
+    </main>
+
+    <footer>CircuitLab · Learn how simple circuits work</footer>
+
+    <dialog id="helpDialog">
+      <h2>Welcome to CircuitLab</h2>
+      <p>1. Drag a part from the left into a dotted slot.</p>
+      <p>2. To remove a placed part, use the x button.</p>
+      <p>3. Fill the slots and press Test Circuit.</p>
+      <p>In Level 3, test all five materials to finish.</p>
+      <button id="startButton">Start Level 1</button>
+    </dialog>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+{
+  "app": {
+    "title": "CircuitLab",
+    "passPercent": 60,
+    "helpText": "Drag parts into the dotted slots, then press Test Circuit."
+  },
+  "parts": {
+    "battery": {
+      "label": "Battery",
+      "icon": "assets/battery.svg",
+      "conductor": true
+    },
+    "bulb": {
+      "label": "Bulb",
+      "icon": "assets/bulb.svg",
+      "conductor": true
+    },
+    "wire": {
+      "label": "Wire",
+      "icon": "assets/wire.svg",
+      "conductor": true
+    },
+    "rubber": {
+      "label": "Rubber band",
+      "icon": "assets/rubber.svg",
+      "conductor": false
+    },
+    "switch": {
+      "label": "Switch",
+      "icon": "assets/switch.svg",
+      "conductor": true
+    },
+    "wood": {
+      "label": "Wooden stick",
+      "icon": "assets/wood.svg",
+      "conductor": false
+    },
+    "coin": {
+      "label": "Coin",
+      "icon": "assets/coin.svg",
+      "conductor": true
+    },
+    "pencil": {
+      "label": "Pencil lead",
+      "icon": "assets/pencil.svg",
+      "conductor": true
+    },
+    "eraser": {
+      "label": "Eraser",
+      "icon": "assets/eraser.svg",
+      "conductor": false
+    },
+    "spoon": {
+      "label": "Plastic spoon",
+      "icon": "assets/spoon.svg",
+      "conductor": false
+    },
+    "key": {
+      "label": "Key",
+      "icon": "assets/key.svg",
+      "conductor": true
+    }
+  },
+  "levels": [
+    {
+      "id": 1,
+      "title": "Light it up",
+      "goal": "Complete the loop so the bulb glows.",
+      "palette": [
+        "battery",
+        "bulb",
+        "wire",
+        "rubber"
+      ],
+      "slots": [
+        {
+          "id": "s1",
+          "accepts": "battery",
+          "x": 18,
+          "y": 50,
+          "label": "Slot 1",
+          "errorMsg": "A circuit needs a battery here."
+        },
+        {
+          "id": "s2",
+          "accepts": "bulb",
+          "x": 50,
+          "y": 22,
+          "label": "Slot 2",
+          "errorMsg": "Put the bulb in this slot."
+        },
+        {
+          "id": "s3",
+          "accepts": "wire",
+          "x": 82,
+          "y": 50,
+          "label": "Slot 3",
+          "errorMsg": "This gap needs a wire."
+        }
+      ],
+      "successMsg": "The circuit is complete. Current can flow and the bulb glows!",
+      "question": {
+        "type": "single",
+        "text": "Why did the bulb glow?",
+        "options": [
+          "The battery warmed up",
+          "The circuit became a closed loop",
+          "The bulb was new",
+          "The wire was long"
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Current flows through a complete, closed loop."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Take control",
+      "goal": "Place the parts, then use the switch to control the bulb.",
+      "palette": [
+        "battery",
+        "bulb",
+        "switch",
+        "wire",
+        "rubber",
+        "wood"
+      ],
+      "slots": [
+        {
+          "id": "s1",
+          "accepts": "battery",
+          "x": 18,
+          "y": 50,
+          "label": "Battery slot",
+          "errorMsg": "Place the battery here."
+        },
+        {
+          "id": "s2",
+          "accepts": "bulb",
+          "x": 50,
+          "y": 22,
+          "label": "Bulb slot",
+          "errorMsg": "Place the bulb here."
+        },
+        {
+          "id": "s3",
+          "accepts": "wire",
+          "x": 82,
+          "y": 50,
+          "label": "Wire slot",
+          "errorMsg": "Place the wire here."
+        },
+        {
+          "id": "s4",
+          "accepts": "switch",
+          "x": 50,
+          "y": 78,
+          "label": "Switch slot",
+          "errorMsg": "Place the switch here."
+        }
+      ],
+      "successMsg": "The parts are correct. Turn the switch on to light the bulb.",
+      "question": {
+        "type": "single",
+        "text": "What happens when the switch is open?",
+        "options": [
+          "Current stops flowing",
+          "The battery gets bigger",
+          "The wire disappears",
+          "The bulb gets brighter"
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "An open switch breaks the circuit, so current cannot flow."
+      }
+    },
+    {
+      "id": 3,
+      "title": "Conductor test",
+      "goal": "Test all five materials to find conductors and insulators.",
+      "palette": [
+        "coin",
+        "pencil",
+        "eraser",
+        "spoon",
+        "key"
+      ],
+      "testGap": true,
+      "slots": [
+        {
+          "id": "gap",
+          "accepts": "material",
+          "x": 50,
+          "y": 78,
+          "label": "Test gap",
+          "errorMsg": "Drop a material into the test gap."
+        }
+      ],
+      "successMsg": "You tested all five materials!",
+      "question": {
+        "type": "multiple",
+        "text": "Which of these are conductors? Select all that apply.",
+        "options": [
+          "Coin",
+          "Plastic spoon",
+          "Pencil lead",
+          "Key"
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "Metal and pencil lead conduct electricity. A plastic spoon is an insulator."
+      }
+    }
+  ]
+}

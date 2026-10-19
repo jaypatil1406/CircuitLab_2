@@ -1,0 +1,123 @@
+
+.board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 600 / 360;
+  min-height: 300px;
+  overflow: hidden;
+  background: #edf1f3;
+  border: 1px solid #aebbc3;
+}
+
+.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.wire {
+  fill: none;
+  stroke: #687c88;
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+.board.current-on .wire {
+  stroke: #e1a52a;
+  stroke-dasharray: 10 7;
+  animation: currentFlow 0.7s linear infinite;
+}
+
+.slot {
+  position: absolute;
+  width: 16%;
+  height: 23%;
+  transform: translate(-50%, -50%);
+  border: 2px dashed #7a8b96;
+  color: #354955;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  font-size: 12px;
+  background: #ffffff;
+  padding: 3px;
+}
+
+.slot.highlight {
+  border-color: #d79a1c;
+}
+
+.slot.fault {
+  border-color: #c84d43;
+  background: #f9e7e5;
+}
+
+.placed-part,
+.fixed-part {
+  position: absolute;
+  width: 16%;
+  min-height: 60px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #aebbc3;
+  background: white;
+  color: #24313a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  z-index: 2;
+}
+
+.placed-part .part-icon,
+.fixed-part .part-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.remove-part {
+  position: absolute;
+  right: -7px;
+  top: -8px;
+  min-height: 23px;
+  width: 23px;
+  padding: 0;
+  border-radius: 50%;
+  background: white;
+  color: #24313a;
+  border: 1px solid #aebbc3;
+}
+
+.board.bulb-on .bulb-part {
+  background: #fff5c7;
+  border-color: #d8a21d;
+}
+
+.switch-button {
+  margin-top: 4px;
+  padding: 4px 8px;
+  min-height: 27px;
+  font-size: 11px;
+}
+
+.material-card {
+  cursor: grab;
+}
+
+.part-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.placed-part .part-icon,
+.fixed-part .part-icon {
+  width: 32px;
+  height: 32px;
+}
