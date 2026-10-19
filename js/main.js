@@ -263,11 +263,11 @@ function showMaterialCount() {
   page.materialProgress.appendChild(progress);
 }
 
-// Start dragging a part from the palette
+
 function startDragging(event, partName) {
   const level = getCurrentLevel();
 
-  // Do not drag a part that is already placed
+  
   for (const part of level.placedParts.values()) {
     if (part === partName) {
       return;
