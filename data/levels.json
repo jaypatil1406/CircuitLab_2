@@ -6,14 +6,6 @@
   },
   "parts": {
     "battery": {
-      "label": "Battery",{
-  "app": {
-    "title": "CircuitLab",
-    "passPercent": 60,
-    "helpText": "Drag parts into the dotted slots, then press Test Circuit."
-  },
-  "parts": {
-    "battery": {
       "label": "Battery",
       "icon": "assets/battery.svg",
       "conductor": true
@@ -226,4 +218,3 @@
     }
   ]
 }
-      
