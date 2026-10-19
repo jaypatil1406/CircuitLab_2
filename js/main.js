@@ -263,136 +263,123 @@ function showMaterialCount() {
   page.materialProgress.appendChild(progress);
 }
 
+// Start dragging a part from the palette
 function startDragging(event, partName) {
-  function removePart(slotId) {
-    function startDragging(event, partName) {
-    const level = getCurrentLevel();
-    }
-    for (const part of level.placedParts.values()) {
-        if (part === partName) {
-            return;
-        }
-    }
+  const level = getCurrentLevel();
 
-    if (
-        level.data.testGap &&
-        level.testedMaterials.includes(partName)
-    ) {
-        return;
+  // Do not drag a part that is already placed
+  for (const part of level.placedParts.values()) {
+    if (part === partName) {
+      return;
     }
   }
 
-    draggedPart = partName;
-    dragPreview = document.createElement("div");
-    dragPreview.className = "drag-preview";
+  if (
+    level.data.testGap &&
+    level.testedMaterials.includes(partName)
+  ) {
+    return;
+  }
 
-  
-    const image = document.createElement("img");
-    image.src = appData.parts[partName].icon;
-    image.alt = appData.parts[partName].label;
+  draggedPart = partName;
 
-   
-    const label = document.createElement("span");
-    label.textContent = appData.parts[partName].label;
+  const part = appData.parts[partName];
+  dragPreview = document.createElement("div");
+  dragPreview.className = "drag-preview";
 
-    dragPreview.appendChild(image);
-    dragPreview.appendChild(label);
-    document.body.appendChild(dragPreview);
+  const image = document.createElement("img");
+  image.src = part.icon;
+  image.alt = "";
+  image.className = "part-icon";
+
+  const label = document.createElement("span");
+  label.textContent = part.label;
+
+  dragPreview.append(image, label);
+  document.body.appendChild(dragPreview);
 
 
-    moveDragging(event);
+  moveDragging(event);
 
-    document.addEventListener("mouseup", stopDragging);
+  document.addEventListener("mousemove", moveDragging);
 
-    event.preventDefault();
+  document.addEventListener("mouseup", stopDragging);
+
+  event.preventDefault();
 }
 
 function moveDragging(event) {
-    if (dragPreview !== null) {
-        dragPreview.style.left = event.clientX + "px";
-        dragPreview.style.top = event.clientY + "px";
-    }
+  if (dragPreview !== null) {
+    dragPreview.style.left = event.clientX + 12 + "px";
+    dragPreview.style.top = event.clientY + 12 + "px";
+  }
 }
 function stopDragging(event) {
-    if (draggedPart === "") {
-        return;
+  if (draggedPart === "") {
+    return;
+  }
+
+  const level = getCurrentLevel();
+  const slots = page.slots.querySelectorAll(".slot");
+  let targetSlot = null;
+
+  slots.forEach(function (slot) {
+    const box = slot.getBoundingClientRect();
+
+    if (
+      event.clientX >= box.left &&
+      event.clientX <= box.right &&
+      event.clientY >= box.top &&
+      event.clientY <= box.bottom
+    ) {
+      targetSlot = slot;
     }
+  });
 
-    const level = getCurrentLevel();
-    const slots = page.slots.querySelectorAll(".slot");
+  if (targetSlot !== null) {
+    const slotId = targetSlot.dataset.slot;
 
-    let targetSlot = null;
-  
-    slots.forEach(function (slot) {
-        const box = slot.getBoundingClientRect();
+    if (level.data.testGap) {
+      level.placedParts.set(slotId, draggedPart);
 
-        if (
-            event.clientX >= box.left &&
-            event.clientX <= box.right &&
-            event.clientY >= box.top &&
-            event.clientY <= box.bottom
-        ) {
-            targetSlot = slot;
-        }
-    });
+      if (!level.testedMaterials.includes(draggedPart)) {
+        level.testedMaterials.push(draggedPart);
+      }
 
-    if (targetSlot !== null) {
-        const slotId = targetSlot.dataset.slot;
+      const conducts = classifyMaterial(draggedPart, appData.parts);
+      const partLabel = appData.parts[draggedPart].label;
 
-        if (level.data.testGap) {
-            level.placedParts.set(slotId, draggedPart);
-
-            if (!level.testedMaterials.includes(draggedPart)) {
-                level.testedMaterials.push(draggedPart);
-            }
-
-            const conducts = classifyMaterial(
-                draggedPart,
-                appData.parts
-            );
-
-            const partName = appData.parts[draggedPart].label;
-
-            if (conducts) {
-                showStatus(
-                    partName + " conducts electricity.",
-                    "success"
-                );
-            } else {
-                showStatus(
-                    partName + " is an insulator.",
-                    "warning"
-                );
-            }
-        } else {
-         
-            level.placedParts.forEach(function (part, oldSlotId) {
-                if (part === draggedPart) {
-                    level.placedParts.delete(oldSlotId);
-                }
-            });
-
-            level.placedParts.set(slotId, draggedPart);
-
-            showStatus(appData.parts[draggedPart].label + " placed.");
-        }
+      if (conducts) {
+        showStatus(partLabel + " conducts electricity.", "success");
+      } else {
+        showStatus(partLabel + " is an insulator.", "warning");
+      }
     } else {
-        showStatus(
-            "Drop the part inside a dotted slot.",
-            "warning"
-        );
+    
+      level.placedParts.forEach(function (part, oldSlotId) {
+        if (part === draggedPart) {
+          level.placedParts.delete(oldSlotId);
+        }
+      });
+
+
+      level.placedParts.set(slotId, draggedPart);
+      showStatus(appData.parts[draggedPart].label + " placed.");
     }
+  } else {
+    showStatus("Drop the part inside a dotted slot.", "warning");
+  }
 
-    if (dragPreview !== null) {
-        dragPreview.remove();
-        dragPreview = null;
-    }
+  draggedPart = "";
+  document.removeEventListener("mousemove", moveDragging);
+  document.removeEventListener("mouseup", stopDragging);
 
-    draggedPart = "";
+  if (dragPreview !== null) {
+    dragPreview.remove();
+    dragPreview = null;
+  }
 
-    document.removeEventListener("mouseup", stopDragging);
-
-    drawLevel();
+  drawLevel();
 }
 
 function removePart(slotId) {
@@ -592,6 +579,4 @@ async function startApp() {
     page.errorMessage.textContent = error.message;
   }
 }
-document.addEventListener("mousemove", moveDragging);
-
 startApp();
