@@ -263,11 +263,11 @@ function showMaterialCount() {
   page.materialProgress.appendChild(progress);
 }
 
-
+// Start dragging a part from the palette
 function startDragging(event, partName) {
   const level = getCurrentLevel();
 
-  
+  // Do not drag a part that is already placed
   for (const part of level.placedParts.values()) {
     if (part === partName) {
       return;
@@ -284,19 +284,18 @@ function startDragging(event, partName) {
   draggedPart = partName;
 
   const part = appData.parts[partName];
-  dragPreview = document.createElement("div");
-  dragPreview.className = "drag-preview";
 
-  const image = document.createElement("img");
-  image.src = part.icon;
-  image.alt = "";
-  image.className = "part-icon";
+dragPreview = document.createElement("div");
+dragPreview.className = "drag-preview";
 
-  const label = document.createElement("span");
-  label.textContent = part.label;
+const image = document.createElement("img");
+image.src = part.icon;
+image.alt = "";
+image.className = "part-icon";
 
-  dragPreview.append(image, label);
-  document.body.appendChild(dragPreview);
+dragPreview.appendChild(image);
+
+document.body.appendChild(dragPreview);
 
 
   moveDragging(event);
